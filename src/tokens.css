@@ -1,0 +1,851 @@
+/* ==========================================================================
+   INNTW — shared token system
+   --------------------------------------------------------------------------
+   Two worlds, one brand.
+
+   PAPER  (origin, press, lockup, studios) — near-white ground, true-black
+          mark and display type. Quiet and disciplined. No gradients,
+          no shadows. The mark is the only expressive element.
+
+   COBALT (project, now) — the INNTW invite treatment. Cobalt canvas with
+          the soft "sky" glow, cream and white type. Ported from
+          inntw-invite.vercel.app.
+
+   Shared components read the SEMANTIC layer only, so the same Footer,
+   Mark and type primitives render correctly in either world. Add
+   `class="world-cobalt"` to <html> to switch.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Raw brand values — from INNTW Brand Guidelines.pdf. Never used directly
+   in components; the semantic layer below is the public interface.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Guidelines — primary */
+  --brand-white: #ffffff;
+  --brand-main-brown: #5b3427; /* Pantone 4695 C */
+  --brand-accent-brown: #85431e; /* Pantone 7517 C */
+  --brand-green: #006c3f; /* Pantone 3500 C */
+
+  /* Guidelines — secondary */
+  --brand-cobalt: #024fda; /* Pantone 293 C */
+  --brand-shine: #ffa300; /* Pantone 137 C */
+  --brand-black: #000000;
+  --brand-white-brown: #dad3c8; /* "cream" in the invite build */
+
+  /* Paper-world neutrals */
+  --brand-paper: #fafaf8;
+  --brand-body: #232323;
+  --brand-muted: #6e6e6c; /* AA-corrected; see assets/README.md */
+  --brand-rule: #dededa;
+
+  /* Cobalt-world derivatives */
+  --brand-cobalt-mid: #034bd0;
+  --brand-cobalt-deep: #023fb4;
+  --brand-cream-200: #c9c0b2; /* cream, hover */
+  --brand-cream-50: #f4f0ea; /* cream, focus/active */
+  --brand-ink-900: #0a0a0a; /* text on cream */
+  --brand-on-cobalt-body: #e8eaf2;
+  --brand-on-cobalt-muted: #cbd5f0; /* 4.58:1 on cobalt */
+}
+
+/* --------------------------------------------------------------------------
+   Semantic layer — PAPER world (default)
+   -------------------------------------------------------------------------- */
+:root {
+  --ground: var(--brand-paper);
+  --fg: var(--brand-black); /* the mark + display type */
+  --fg-body: var(--brand-body); /* running text */
+  --fg-muted: var(--brand-muted); /* captions, meta, secondary */
+  --rule: var(--brand-rule); /* hairlines */
+
+  --accent: var(--brand-black); /* interactive fill */
+  --accent-fg: var(--brand-paper); /* text on that fill */
+  --accent-hover: var(--brand-body);
+
+  --focus: var(--brand-cobalt); /* keyboard focus ring */
+  --selection-bg: var(--brand-black);
+  --selection-fg: var(--brand-paper);
+
+  --canvas: var(--ground); /* flat in the paper world */
+  --sky-opacity: 0;
+
+  /* Inverse surface — the black editorial footer that sits under every
+     property. Components read these, never a --brand-* value. */
+  --inverse-ground: var(--brand-black);
+  --inverse-fg: var(--brand-white);
+  --inverse-body: var(--brand-white-brown);
+  --inverse-muted: #a8a49c; /* 6.9:1 on black */
+  --inverse-rule: rgba(255, 255, 255, 0.18);
+
+  /* next/font/google injects --font-archivo / --font-newsreader on <html>.
+     The fallbacks keep this valid if an app does not load them. */
+  --font-display:
+    var(--font-archivo, "Archivo"), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-ui: var(--font-display);
+  --font-read:
+    var(--font-newsreader, "Newsreader"), ui-serif, Georgia,
+    "Times New Roman", serif;
+
+  /* Rhythm + motion */
+  --gutter: clamp(20px, 4vw, 64px);
+  --measure: 68ch; /* long-form cap, per the brief */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 480ms;
+}
+
+/* --------------------------------------------------------------------------
+   Semantic layer — COBALT world
+   -------------------------------------------------------------------------- */
+.world-cobalt {
+  --ground: var(--brand-cobalt);
+  --fg: var(--brand-white);
+  --fg-body: var(--brand-on-cobalt-body);
+  --fg-muted: var(--brand-on-cobalt-muted);
+  --rule: rgba(255, 255, 255, 0.22);
+
+  --accent: var(--brand-white-brown); /* cream CTA */
+  --accent-fg: var(--brand-ink-900);
+  --accent-hover: var(--brand-cream-200);
+
+  --focus: var(--brand-white);
+  --selection-bg: var(--brand-white-brown);
+  --selection-fg: var(--brand-ink-900);
+
+  --inverse-ground: var(--brand-ink-900);
+  --inverse-fg: var(--brand-white);
+  --inverse-body: var(--brand-white-brown);
+  --inverse-muted: #a8a49c;
+  --inverse-rule: rgba(255, 255, 255, 0.18);
+
+  /* The signature invite canvas. */
+  --canvas:
+    radial-gradient(circle at 88% 70%, rgba(255, 255, 255, 0.1), transparent 55%),
+    radial-gradient(circle at 8% 18%, rgba(255, 255, 255, 0.06), transparent 55%),
+    linear-gradient(
+      180deg,
+      var(--brand-cobalt) 0%,
+      var(--brand-cobalt-mid) 55%,
+      var(--brand-cobalt-deep) 100%
+    );
+  --sky-opacity: 0.55;
+
+  /* Helvetica Neue, matching the invite. Metric-compatible fallbacks. */
+  --font-display:
+    "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  --font-ui: var(--font-display);
+  --font-read:
+    var(--font-newsreader, "Newsreader"), ui-serif, Georgia,
+    "Times New Roman", serif;
+}
+
+/* --------------------------------------------------------------------------
+   Tailwind bridge — semantic tokens become utilities
+   (bg-ground, text-fg, border-rule, font-display, …)
+   -------------------------------------------------------------------------- */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-fg: var(--fg);
+  --color-body: var(--fg-body);
+  --color-muted: var(--fg-muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-hover: var(--accent-hover);
+
+  --color-cobalt: var(--brand-cobalt);
+  --color-cream: var(--brand-white-brown);
+  --color-shine: var(--brand-shine);
+  --color-green: var(--brand-green);
+  --color-main-brown: var(--brand-main-brown);
+  --color-accent-brown: var(--brand-accent-brown);
+
+  --font-display: var(--font-display);
+  --font-ui: var(--font-ui);
+  --font-read: var(--font-read);
+
+  --ease-out: var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--fg-body);
+  font-family: var(--font-ui);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+/* Visible keyboard focus everywhere, never on mouse click. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* Reserve the scrollbar so page-to-page navigation never shifts layout. */
+html {
+  scrollbar-gutter: stable;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   The cobalt canvas + sky glow. Inert in the paper world (--sky-opacity: 0).
+   -------------------------------------------------------------------------- */
+.canvas {
+  position: relative;
+  min-height: 100svh;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas > .sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--sky-opacity);
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(
+      ellipse 800px 360px at 100% 50%,
+      rgba(255, 255, 255, 0.18),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 500px 240px at 92% 38%,
+      rgba(255, 255, 255, 0.1),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 600px 220px at 85% 78%,
+      rgba(255, 255, 255, 0.07),
+      transparent 70%
+    );
+}
+
+.canvas > *:not(.sky) {
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   Type primitives
+   -------------------------------------------------------------------------- */
+
+/* Display: tight tracking, heavy weight, per the brief. */
+.t-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.8rem + 3.5vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.94;
+  color: var(--fg);
+  text-wrap: balance;
+  margin: 0;
+}
+.world-cobalt .t-display {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.t-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.625rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  color: var(--fg);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.t-h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 1.05rem + 0.36vw, 1.3125rem);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+  color: var(--fg);
+  margin: 0;
+}
+
+/* Running text. */
+.t-body {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  line-height: 1.62;
+  color: var(--fg-body);
+  max-width: var(--measure);
+  margin: 0;
+}
+
+/* Long-form reading — stories and case studies only. */
+.t-read {
+  font-family: var(--font-read);
+  font-weight: 400;
+  font-size: clamp(1.125rem, 1.05rem + 0.36vw, 1.3125rem);
+  line-height: 1.72;
+  color: var(--fg-body);
+  max-width: var(--measure);
+}
+
+.t-lead {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: clamp(1.125rem, 1.03rem + 0.46vw, 1.375rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--fg-body);
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* Captions, meta, secondary. Sentence case — no tracked-out eyebrows. */
+.t-meta {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--fg-muted);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Links — underline is the affordance, no arrows appended
+   -------------------------------------------------------------------------- */
+.link {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 38%, transparent);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+.link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons — motion answers a click, nothing more
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+  padding: 0.875rem 1.5rem;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.btn-quiet {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--rule);
+}
+.btn-quiet:hover:not(:disabled) {
+  background: transparent;
+  border-color: var(--fg);
+}
+
+/* --------------------------------------------------------------------------
+   Fields
+   -------------------------------------------------------------------------- */
+.field {
+  display: block;
+  width: 100%;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.8125rem 0.9375rem;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.field::placeholder {
+  color: var(--fg-muted);
+}
+.field:hover {
+  border-color: color-mix(in srgb, var(--fg) 40%, transparent);
+}
+.field:focus {
+  border-color: var(--fg);
+}
+.world-cobalt .field {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+.world-cobalt .field:focus {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--brand-white-brown);
+}
+
+.label {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--fg);
+  margin-bottom: 0.4375rem;
+}
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+.wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0;
+  padding-inline: var(--gutter);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--fg);
+  color: var(--ground);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.skip-link:focus {
+  left: var(--gutter);
+  top: 0.75rem;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Nav — small mark, plain links, no JavaScript. Wraps at narrow widths
+   instead of collapsing to a hamburger.
+   -------------------------------------------------------------------------- */
+.nav {
+  padding-block: 1.75rem 0;
+}
+
+.nav-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
+.nav-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.nav-label {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+}
+
+.nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  text-decoration-color: transparent;
+}
+
+.nav-cta {
+  padding: 0.5625rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   Footer — one structural row
+   -------------------------------------------------------------------------- */
+.footer {
+  margin-top: auto;
+  padding-block: 2.5rem 3rem;
+  border-top: 1px solid var(--rule);
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.footer-current {
+  color: var(--fg-muted);
+}
+
+.footer-legal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+/* --------------------------------------------------------------------------
+   Section rhythm — generous, asymmetric, left-aligned
+   -------------------------------------------------------------------------- */
+.section {
+  padding-block: clamp(3.5rem, 7vw, 7rem);
+}
+
+.section + .section {
+  border-top: 1px solid var(--rule);
+}
+
+/* A left-weighted two-column split: label rail, then content. */
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem 3rem;
+  align-items: start;
+}
+
+@media (min-width: 860px) {
+  .split {
+    grid-template-columns: minmax(140px, 200px) minmax(0, 1fr);
+    gap: 0 4rem;
+  }
+}
+
+.split > .split-rail {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+  padding-top: 0.375rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.flow > * + * {
+  margin-top: 1.125rem;
+}
+
+/* Long-form article body. */
+.prose {
+  max-width: var(--measure);
+}
+.prose > * + * {
+  margin-top: 1.5rem;
+}
+.prose h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.14;
+  color: var(--fg);
+  margin-top: 3rem;
+}
+.prose h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+  margin-top: 2.25rem;
+}
+.prose p,
+.prose li {
+  font-family: var(--font-read);
+  font-size: clamp(1.125rem, 1.05rem + 0.36vw, 1.3125rem);
+  line-height: 1.72;
+  color: var(--fg-body);
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.25rem;
+}
+.prose li + li {
+  margin-top: 0.5rem;
+}
+.prose blockquote {
+  margin: 2.5rem 0;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--fg);
+}
+.prose blockquote p {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.32;
+  color: var(--fg);
+}
+.prose figure {
+  margin: 2.5rem 0;
+}
+.prose figcaption {
+  margin-top: 0.75rem;
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+}
+.prose img,
+.prose video,
+.prose iframe {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+}
+.prose a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+/* A 16:9 slot for embedded video, sized before it loads. */
+.embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.embed > iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   GlobalFooter — the If Not Now Then When footer shared by every property.
+   Black editorial band: masthead, one-line description, the properties,
+   the store, the corporation. Reads the inverse surface tokens only.
+   -------------------------------------------------------------------------- */
+.gf {
+  margin-top: auto;
+  background: var(--inverse-ground);
+  color: var(--inverse-body);
+  padding-block: clamp(3rem, 6vw, 5rem) 2rem;
+}
+.gf-inner {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.gf-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem 3rem;
+}
+@media (min-width: 760px) {
+  .gf-grid {
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  }
+}
+.gf-masthead {
+  display: inline-block;
+  font-family: var(--font-read);
+  font-weight: 600;
+  font-size: 2.125rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--inverse-fg);
+  text-decoration: none;
+}
+.gf-blurb {
+  margin: 1rem 0 0;
+  max-width: 44ch;
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--inverse-body);
+}
+.gf-social {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+.gf-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--inverse-fg);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.gf-social a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.gf-col h2 {
+  margin: 0 0 1rem;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--inverse-fg);
+}
+.gf-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.gf-col a,
+.gf-col span[aria-current] {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--inverse-body);
+  text-decoration: none;
+}
+.gf-col span[aria-current] {
+  color: var(--inverse-muted);
+}
+.gf-col a:hover {
+  color: var(--inverse-fg);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.gf-bottom {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--inverse-rule);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--inverse-muted);
+}
+.gf-bottom a {
+  color: var(--inverse-muted);
+  text-decoration: none;
+}
+.gf-bottom a:hover {
+  color: var(--inverse-fg);
+}
+.gf-bottom p {
+  margin: 0;
+}
