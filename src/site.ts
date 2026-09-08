@@ -68,14 +68,17 @@ export const SITES: Record<SiteKey, SiteMeta> = {
     key: "studios",
     name: "INNTW Studios",
     project: "inntw-studios",
-    fallbackUrl: "https://inntw-studios.vercel.app",
+    // Attached 2026-09-08. Cross-links from the other sites resolve through
+    // this, so it has to be the real home rather than the .vercel.app alias.
+    fallbackUrl: "https://inntwstudios.com",
     role: "The creative arm",
   },
   brand: {
     key: "brand",
     name: "INNTW Brand",
     project: "inntw-brand",
-    fallbackUrl: "https://inntw-brand.vercel.app",
+    // Attached 2026-09-08.
+    fallbackUrl: "https://inntwbrand.com",
     role: "The magazine",
   },
 };
