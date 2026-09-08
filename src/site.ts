@@ -47,7 +47,9 @@ export const SITES: Record<SiteKey, SiteMeta> = {
     key: "origin",
     name: "INNTW Origin",
     project: "inntw-origin",
-    fallbackUrl: "https://inntw-origin.vercel.app",
+    // Attached 2026-09-08. This is the corporation the rest of the map hangs
+    // off, so every cross-link has to reach it here, not on the alias.
+    fallbackUrl: "https://ifnotnowthenwhen.co",
     role: "The phrase, and who holds it",
   },
   press: {
@@ -61,7 +63,9 @@ export const SITES: Record<SiteKey, SiteMeta> = {
     key: "lockup",
     name: "INNTW Lockup",
     project: "inntw-lockup",
-    fallbackUrl: "https://inntw-lockup.vercel.app",
+    // Attached 2026-09-08. The domain spells the mark, which is the point of
+    // the site; cross-links resolve through here.
+    fallbackUrl: "https://ifnotwtwhen.com",
     role: "The mark and how to use it",
   },
   studios: {
