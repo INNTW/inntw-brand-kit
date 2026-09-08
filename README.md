@@ -26,6 +26,25 @@ const nextConfig: NextConfig = {
 `next`, `react` and `react-dom` are peer dependencies — the consuming app
 supplies them, so there is never a second copy of React in the tree.
 
+### Bump `version` on every change. Every one.
+
+Webpack — and therefore Next's build cache — treats everything under
+`node_modules` as immutable and snapshots it **by the version in
+`package.json`**, not by file contents. Ship a change without bumping the
+version and consumers reinstall the new commit, rebuild, and still emit the
+old output. No error, no warning; the site just does not change.
+
+This bit on 2026-09-08. `1.0.0` → `1.0.0` across two commits meant five sites
+rebuilt on Vercel, went green, and served the previous build's URLs. Locally
+the same thing happens until you delete `.next`.
+
+So: change something here, bump the version, push. Then in each consuming
+repo:
+
+```bash
+pnpm update @inntw/brand
+```
+
 ## Use
 
 ```ts
