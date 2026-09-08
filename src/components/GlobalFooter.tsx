@@ -1,7 +1,7 @@
 import { ORG, SITES, TRADEMARK_NOTICE, corpUrl, siblingUrl, storeUrl, type SiteKey } from "../site";
 
 /** The properties, in the order they are listed everywhere. */
-const ORDER: SiteKey[] = ["brand", "project", "origin", "studios", "press", "lockup", "now"];
+const ORDER: SiteKey[] = ["brand", "project", "origin", "studios", "lockup", "now"];
 
 /**
  * The If Not Now Then When footer.
@@ -95,7 +95,7 @@ export function GlobalFooter({
                 <a href={corpUrl()}>ifnotnowthenwhen.co</a>
               </li>
               <li>
-                <a href={siblingUrl("press", "/contact")}>Press</a>
+                <a href={siblingUrl("origin", "/press")}>Press</a>
               </li>
               <li>
                 <a href={siblingUrl("origin", "/contact")}>Contact</a>

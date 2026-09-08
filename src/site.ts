@@ -11,7 +11,6 @@ export type SiteKey =
   | "project"
   | "now"
   | "origin"
-  | "press"
   | "lockup"
   | "studios"
   | "brand";
@@ -51,13 +50,6 @@ export const SITES: Record<SiteKey, SiteMeta> = {
     // off, so every cross-link has to reach it here, not on the alias.
     fallbackUrl: "https://ifnotnowthenwhen.co",
     role: "The phrase, and who holds it",
-  },
-  press: {
-    key: "press",
-    name: "INNTW Press",
-    project: "inntw-press",
-    fallbackUrl: "https://inntw-press.vercel.app",
-    role: "Press kit and media contact",
   },
   lockup: {
     key: "lockup",
@@ -173,6 +165,10 @@ export function formEndpoint(): string {
    Facts shared across sites. Kept here so a change lands everywhere at once
    without any prose being duplicated between sites.
    -------------------------------------------------------------------------- */
+/*
+ * Press facts and the media contact live on INNTW Origin at /press since
+ * 2026-09-08. The separate press site was decommissioned that day.
+ */
 export const ORG = {
   name: "INNTW",
   legalName: "[LEGAL ENTITY NAME]",

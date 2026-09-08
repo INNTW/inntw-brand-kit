@@ -65,7 +65,7 @@ export function pageMetadata(opts: {
    JSON-LD
    -------------------------------------------------------------------------- */
 
-/** Organization — origin and press only. Those two carry the entity identity. */
+/** Organization — origin only. It carries the entity identity and the press kit. */
 export function organizationLd(site: SiteKey) {
   return {
     "@context": "https://schema.org",
