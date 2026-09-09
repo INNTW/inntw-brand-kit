@@ -60,10 +60,16 @@ import "@inntw/brand/tokens.css";
 | `./content` | Filesystem MDX pipeline — `readAll`, `readOne`, `allSlugs`, `safeDate` |
 | `./assets/*` | The mark in five colourways, and the Archivo woffs |
 
-## Two worlds, one semantic layer
+## Three worlds, one semantic layer
 
-`tokens.css` defines two worlds — **paper** (default) and **cobalt**
-(`.world-cobalt` on `<html>`). Components only ever read the semantic layer:
+`tokens.css` defines three worlds — **paper** (default), **cobalt**
+(`.world-cobalt`) and, since 1.2.0, **sky** (`.world-sky`: white ground,
+cobalt light rising from the foot of the page, cloud — inntw.now, the
+Project). Put the class on `<html>`, or on a wrapper to scope a world to
+part of a page. Sky adds two tokens — `--sky-blend` (the `.sky` blend mode,
+`screen` elsewhere, `normal` here) and `--glow` — and one primitive,
+`.t-script`: Newsreader Italic for the one confiding line under a
+headline. Components only ever read the semantic layer:
 `--ground`, `--fg`, `--accent`, `--rule`. They never read a `--brand-*` value
 directly.
 
