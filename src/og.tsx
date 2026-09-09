@@ -11,6 +11,8 @@ const BODY = "#232323";
 const MUTED = "#6E6E6C";
 const COBALT = "#024FDA";
 const CREAM = "#DAD3C8";
+const WHITE = "#FFFFFF";
+const INK_900 = "#0A0A0A";
 
 /**
  * The mark as a data URI, built from the same path constant the site
@@ -33,9 +35,10 @@ const ARCHIVO = [
 /**
  * Per-route OG image: the mark and the page title, on paper.
  *
- * `world: "cobalt"` renders the project and now variant — cream mark and
- * type on the cobalt ground — so a shared card reads as the site it came
- * from before anyone reads the words.
+ * `world: "cobalt"` renders the invite variant — cream mark and type on the
+ * cobalt ground; `world: "sky"` renders inntw.now — cobalt mark and ink type
+ * on white with cobalt light at the foot — so a shared card reads as the
+ * site it came from before anyone reads the words.
  */
 export function ogImage(opts: {
   title: string;
@@ -43,12 +46,20 @@ export function ogImage(opts: {
   property: string;
   /** Optional line below, e.g. a participant or a discipline. */
   detail?: string;
-  world?: "paper" | "cobalt";
+  world?: "paper" | "cobalt" | "sky";
 }) {
   const cobalt = opts.world === "cobalt";
-  const ground = cobalt ? COBALT : PAPER;
-  const display = cobalt ? CREAM : INK;
-  const secondary = cobalt ? "rgba(255,255,255,0.72)" : MUTED;
+  const sky = opts.world === "sky";
+  // Sky: white ground, cobalt mark, ink type, cobalt light rising from the
+  // bottom edge — the card reads as inntw.now before the words are read.
+  const ground = sky
+    ? `linear-gradient(180deg, ${WHITE} 0%, ${WHITE} 58%, #dfe7fb 100%)`
+    : cobalt
+      ? COBALT
+      : PAPER;
+  const display = cobalt ? CREAM : sky ? INK_900 : INK;
+  const markColor = sky ? COBALT : display;
+  const secondary = cobalt ? "rgba(255,255,255,0.72)" : sky ? COBALT : MUTED;
   const detailColor = cobalt ? "rgba(255,255,255,0.86)" : BODY;
 
   return new ImageResponse(
@@ -67,7 +78,7 @@ export function ogImage(opts: {
       >
         <div style={{ display: "flex" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={markDataUri(display)} width={132} height={132} alt="" />
+          <img src={markDataUri(markColor)} width={132} height={132} alt="" />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>

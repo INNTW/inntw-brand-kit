@@ -1,7 +1,7 @@
 {
   "name": "@inntw/brand",
-  "version": "1.1.0",
-  "description": "The INNTW design system \u2014 tokens, the mark, and the shared components every INNTW site is built from.",
+  "version": "1.2.0",
+  "description": "The INNTW design system — tokens, the mark, and the shared components every INNTW site is built from.",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -30,11 +30,12 @@
     "gray-matter": "^4.0.3"
   },
   "peerDependencies": {
-    "next": "^15.5.2",
+    "next": "^15.5.2 || ^16",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
+    "@types/node": "^24.13.3",
     "@types/react": "^19.1.12",
     "next": "^15.5.2",
     "react": "^19.1.1",

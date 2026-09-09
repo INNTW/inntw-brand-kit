@@ -1,7 +1,7 @@
 import { SITES, TRADEMARK_NOTICE, siblingUrl, storeUrl, type SiteKey } from "../site";
 
 /** The order the properties are listed in, everywhere. */
-const ORDER: SiteKey[] = ["brand", "project", "origin", "studios", "lockup", "now"];
+const ORDER: SiteKey[] = ["now", "brand", "origin", "studios", "lockup"];
 
 /**
  * One structural row linking the properties by their proper names.

@@ -8,7 +8,6 @@
  */
 
 export type SiteKey =
-  | "project"
   | "now"
   | "origin"
   | "lockup"
@@ -28,19 +27,16 @@ export interface SiteMeta {
 }
 
 export const SITES: Record<SiteKey, SiteMeta> = {
-  project: {
-    key: "project",
-    name: "The Project",
-    project: "inntw-project",
-    fallbackUrl: "https://inntw-project.vercel.app",
-    role: "The six-month transformation project",
-  },
   now: {
     key: "now",
-    name: "Now",
-    project: "inntw-now",
-    fallbackUrl: "https://inntw-now.vercel.app",
-    role: "Make the commitment",
+    name: "The Project",
+    project: "inntw-launch",
+    // inntw.now — the home of the If Not Now Then When project. The pledge,
+    // the people, the six months. It absorbed the separate `project` site on
+    // 2026-09-09; that key is gone, so a stale `siblingUrl("project")` fails
+    // at compile time rather than linking to a dead deployment.
+    fallbackUrl: "https://inntw.now",
+    role: "The pledge, the people, the six months",
   },
   origin: {
     key: "origin",

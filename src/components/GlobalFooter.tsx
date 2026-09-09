@@ -1,7 +1,7 @@
 import { ORG, SITES, TRADEMARK_NOTICE, corpUrl, siblingUrl, storeUrl, type SiteKey } from "../site";
 
 /** The properties, in the order they are listed everywhere. */
-const ORDER: SiteKey[] = ["brand", "project", "origin", "studios", "lockup", "now"];
+const ORDER: SiteKey[] = ["now", "brand", "origin", "studios", "lockup"];
 
 /**
  * The If Not Now Then When footer.
