@@ -167,7 +167,7 @@ export function formEndpoint(): string {
  */
 export const ORG = {
   name: "INNTW",
-  legalName: "[LEGAL ENTITY NAME]",
+  legalName: "If Not Now Then When Inc.",
   expansion: "If Not Now Then When",
   founder: "Theshantha De Silva",
   founded: "2025",
@@ -177,11 +177,15 @@ export const ORG = {
   region: "Ontario",
   country: "CA",
   parent: "Collide Brand Management",
-  email: "[GENERAL EMAIL]",
-  pressEmail: "[PRESS EMAIL]",
-  studiosEmail: "[STUDIOS EMAIL]",
+  email: "orders@inntw.co",
+  pressEmail: "orders@inntw.co",
+  studiosEmail: "orders@inntw.co",
 } as const;
 
-/** ™ only. ® appears nowhere in this system. */
+/**
+ * ™ only — ® appears nowhere in this system. Both marks are registered to the
+ * corporation in Canada; the US filings (2025) are pending, and a US
+ * registration is never claimed before it issues. Settled by T, 2026-09-17.
+ */
 export const TRADEMARK_NOTICE =
-  "INNTW™ and IF NOT NOW THEN WHEN™ are trademarks of [LEGAL ENTITY NAME].";
+  "INNTW™ and the If Not Now Then When mark are registered trademarks of If Not Now Then When Inc. in Canada; US registrations pending.";
