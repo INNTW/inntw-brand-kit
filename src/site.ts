@@ -180,6 +180,8 @@ export const ORG = {
   email: "orders@inntw.co",
   pressEmail: "orders@inntw.co",
   studiosEmail: "orders@inntw.co",
+  /** Trademarks, licensing, the platforms and the lawyer. An alias on the orders@ mailbox. Settled by T, 2026-09-18. */
+  legalEmail: "legal@inntw.co",
 } as const;
 
 /**
