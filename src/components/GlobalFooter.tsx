@@ -34,9 +34,9 @@ export function GlobalFooter({
               INNTW
             </a>
             <p className="gf-blurb">
-              If Not Now Then When. A clothing and creative brand made in
-              Toronto, and the company that exists because its founder answered
-              the question.
+              If Not Now Then When. A philosophy-driven clothing and creative
+              brand from Toronto. This version of you is temporary; as long as
+              this brand exists, dreams can come true.
             </p>
             <ul className="gf-social">
               <li>
