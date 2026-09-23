@@ -1,3 +1,4 @@
+import { Mark } from "./Mark";
 import { ORG, SITES, TRADEMARK_NOTICE, corpUrl, siblingUrl, storeUrl, type SiteKey } from "../site";
 
 /** The properties, in the order they are listed everywhere. */
@@ -7,8 +8,9 @@ const ORDER: SiteKey[] = ["now", "brand", "origin", "studios", "lockup"];
  * The If Not Now Then When footer.
  *
  * One black editorial band shared by every property, so the ecosystem reads
- * as one company wherever a reader lands. Left: the masthead, one line, the
- * Instagram. Middle: the properties. Right: the store and the corporation,
+ * as one company wherever a reader lands. Left: the mark itself, one line,
+ * the Instagram — the masthead is the lockup, never the four letters set in
+ * a text face (2026-09-23). Middle: the properties. Right: the store and the corporation,
  * which is where every site ultimately points.
  *
  * Reads the inverse surface tokens only, so it renders identically on the
@@ -30,8 +32,8 @@ export function GlobalFooter({
       <div className="gf-inner">
         <div className="gf-grid">
           <div>
-            <a className="gf-masthead" href={siblingUrl("brand")}>
-              INNTW
+            <a className="gf-masthead" href={siblingUrl("brand")} aria-label="INNTW">
+              <Mark size="76px" decorative />
             </a>
             <p className="gf-blurb">
               If Not Now Then When. A philosophy-driven clothing and creative

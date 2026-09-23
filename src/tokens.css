@@ -835,11 +835,7 @@ a {
 }
 .gf-masthead {
   display: inline-block;
-  font-family: var(--font-read);
-  font-weight: 600;
-  font-size: 2.125rem;
-  letter-spacing: 0.02em;
-  line-height: 1;
+  line-height: 0;
   color: var(--inverse-fg);
   text-decoration: none;
 }
