@@ -2,6 +2,7 @@ export { Mark } from "./components/Mark";
 export { Nav, type NavItem } from "./components/Nav";
 export { Footer } from "./components/Footer";
 export { GlobalFooter } from "./components/GlobalFooter";
+export { EmailSignup, BRAND_CONSENT } from "./components/EmailSignup";
 export { MARK_PATH, MARK_VIEWBOX } from "./mark-path";
 
 export {

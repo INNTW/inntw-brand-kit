@@ -54,7 +54,7 @@ import "@inntw/brand/tokens.css";
 
 | Export | What it is |
 |---|---|
-| `.` | Components (`Mark`, `Nav`, `Footer`, `GlobalFooter`), `site.ts`, `seo.ts` |
+| `.` | Components (`Mark`, `Nav`, `Footer`, `GlobalFooter`, `EmailSignup`), `site.ts`, `seo.ts` |
 | `./tokens.css` | The whole design system. Import once, in the root layout |
 | `./og` | `next/og` image generator, paper and cobalt variants |
 | `./content` | Filesystem MDX pipeline — `readAll`, `readOne`, `allSlugs`, `safeDate` |
